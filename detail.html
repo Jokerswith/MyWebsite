@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="Boost Skripsi.ico" type="image/x-icon" />
+    <title>Perbandingan Fitur Format Dokumen</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .back-to-top {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: #ffffff;
+        color: #1a1a1a;
+        border: none;
+        padding: 10px 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 40px 0;
+      }
+
+      .header h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-weight: 700;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        color: #b0b0b0;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .table-container {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-x: auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .table-header,
+      .feature-row {
+        min-width: 700px;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: 16px;
+      }
+
+      .table-header {
+        background: linear-gradient(135deg, #333333 0%, #404040 100%);
+        padding: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .table-header div {
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-align: center; /* Horizontal center */
+        color: #ffffff;
+        display: flex;
+        align-items: center; /* Vertical center */
+        justify-content: center; /* Horizontal center */
+        line-height: 1.2;
+        padding: 12px 8px; /* Lebih banyak padding vertikal */
+        min-height: 60px; /* Minimal height untuk consistency */
+        height: auto; /* Auto height */
+      }
+
+      .format-section {
+        margin-bottom: 2px;
+      }
+
+      .section-title {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+        padding: 20px 24px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .feature-row {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        align-items: center;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.01);
+      }
+
+      .feature-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateX(4px);
+      }
+
+      .feature-name {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      .feature-description {
+        color: #a0a0a0;
+        font-size: 0.9rem;
+        margin-top: 4px;
+        font-style: italic;
+      }
+
+      .feature-shortcut {
+        color: #f6f0f0;
+        font-size: 0.9rem;
+        margin-top: 2px;
+        font-family: "Courier New", monospace;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: inline-block;
+        font-weight: bold;
+        letter-spacing: 3px;
+      }
+
+      .status {
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 8px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .status.yes {
+        color: #00ff88;
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+      }
+
+      .status.no {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+      }
+
+      .status:hover {
+        transform: scale(1.05);
+      }
+
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #b0b0b0;
+      }
+
+      .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+      }
+
+      .legend-color.yes {
+        background: rgba(0, 255, 136, 0.3);
+        border: 1px solid #00ff88;
+      }
+
+      .legend-color.no {
+        background: rgba(255, 107, 107, 0.3);
+        border: 1px solid #ff6b6b;
+      }
+      .saran {
+        font-size: 0.9rem;
+        color: #dedddd;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-to-top" onclick="window.location.href = 'index.html'">
+      Kembali
+    </button>
+    <div class="container">
+      <div class="header">
+        <h1>Perbandingan Fitur Format Dokumen</h1>
+        <p>
+          Bandingkan fitur-fitur yang tersedia untuk berbagai format dokumen
+          akademik
+        </p>
+      </div>
+
+      <!-- TOMBOL FORMAT TELAH DIHAPUS SESUAI PERMINTAAN -->
+      <i class="saran"> *Disarankan menggunakan laptop agar lebih baik </i>
+      <br />
+      <br />
+      <div class="table-container">
+        <div class="table-header">
+          <div>Fitur-Fitur</div>
+          <div>Format BAB<br />& Sub BAB A</div>
+          <div>Format BAB<br />& Sub BAB 1.1</div>
+          <div>Format CHAPTER<br />& Sub CHAPTER A</div>
+          <div>Format CHAPTER<br />& Sub CHAPTER 1.1</div>
+        </div>
+
+        <!-- Semua fitur tetap ditampilkan seperti sebelumnya -->
+        <div class="format-section" data-category="cover">
+          <div class="section-title">Kop Surat, TTD, Text Box & Footnote</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Kop Surat Dihalaman Pertama Saja atau Semua Halaman
+              </div>
+              <div class="feature-shortcut">
+                C + ` (Backtick) / CTRL + SHIFT + ` (Backtick)
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Tanda Tangan</div>
+              <div class="feature-shortcut">ALT + SHIFT + T</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Munculkan Text Box</div>
+              <div class="feature-shortcut">CTRL + (←) Arah Kiri</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Footnote</div>
+              <div class="feature-shortcut">ALT + F</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="cover">
+          <div class="section-title">Cover</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Cover Makalah atau Skripsi (Indonesia)
+              </div>
+              <div class="feature-shortcut">ALT + M / ALT + S</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Cover Makalah atau Skripsi (English)
+              </div>
+              <div class="feature-shortcut">ALT + M / ALT + S</div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="heading">
+          <div class="section-title">Heading & Format</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Setara Heading 1 Tanpa BAB/CHAPTER</div>
+              <div class="feature-description">Misal *kata pengantar</div>
+              <div class="feature-shortcut">CTRL + 1</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Setara Heading 1 Tidak Masuk Daftar Isi
+              </div>
+              <div class="feature-description">
+                Misal Daftar Pustaka dan Lampiran untuk Kampus Tertentu
+              </div>
+              <div class="feature-shortcut">CTRL + 2</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">BAB/CHAPTER dan SUB BAB/CHAPTER</div>
+              <div class="feature-shortcut">ALT 1 / ALT 2 - ALT 8</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="list">
+          <div class="section-title">Daftar-Daftar</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Daftar Isi Tingkat 1-2 atau Semua Tingkat
+              </div>
+              <div class="feature-shortcut">
+                CTRL + SHIFT + I / CTRL + ALT + I
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Table of Contents Tingkat 1-2 atau Semua Tingkat
+              </div>
+              <div class="feature-shortcut">
+                CTRL + SHIFT + I / CTRL + ALT + I
+              </div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Daftar Tabel/Lampiran/Gambar</div>
+              <div class="feature-shortcut">CTRL + SHIFT + T/L/G</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">List of Tables/Appendices/Figures</div>
+              <div class="feature-shortcut">CTRL + SHIFT + T/L/G</div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Daftar Caption Custom</div>
+              <div class="feature-shortcut">CTRL + SHIFT + C</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Update Daftar</div>
+              <div class="feature-shortcut">CTRL + SHIFT + U</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="caption">
+          <div class="section-title">Caption & ID</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Beri ID Ke Setiap BAB / CHAPTER</div>
+              <div class="feature-description">
+                Agar jangan Gambar I.1 atau error
+              </div>
+              <div class="feature-shortcut">ALT + D</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Caption Gambar Sedigit/Duadigit</div>
+              <div class="feature-shortcut">ALT + G / CTRL + ALT + G</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Caption Figure Sedigit/Duadigit</div>
+              <div class="feature-shortcut">ALT + G / CTRL + ALT + G</div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Caption Tabel Sedigit/Duadigit</div>
+              <div class="feature-shortcut">ALT + T / CTRL + ALT + T</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Caption Table Sedigit/Duadigit</div>
+              <div class="feature-shortcut">ALT + T / CTRL + ALT + T</div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Caption Lampiran A/Lampiran 1</div>
+              <div class="feature-shortcut">ALT + A / CTRL + ALT + L</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Caption Appendix A/Appendix 1</div>
+              <div class="feature-shortcut">ALT + A / CTRL + ALT + L</div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Buka Dialog Insert Caption</div>
+              <div class="feature-description">*untuk membuat caption lain</div>
+              <div class="feature-shortcut">CTRL + ALT + B</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Update Caption</div>
+              <div class="feature-shortcut">CTRL + SHIFT + U</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <!-- Semua fitur tetap ditampilkan seperti sebelumnya -->
+        <div class="format-section" data-category="cover">
+          <div class="section-title">Format Kata & Paragraf</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Atur Indentasi Sesuai Sub Chapter</div>
+              <div class="feature-shortcut">
+                CTRL + SHIFT + 1 - CTRL + SHIFT + 7
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                (Line Spacing) Atur Jarak Antara Baris 1, 1.5, 2
+              </div>
+              <div class="feature-shortcut">
+                CTRL + KOMA, CTRL + TITIK, CTRL + /
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Rata Kanan Kiri dan Indentasi Baris Pertama
+              </div>
+              <div class="feature-shortcut">CTRL + SHIFT + R</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Besar dan Kecilkan Ukuran Huruf</div>
+              <div class="feature-shortcut">
+                CTRL + SHIFT + > / CTRL + SHIFT + <
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Susun Daftar Pustaka Dari A-Z dan Atur Hanging Indentasinya
+              </div>
+              <div class="feature-shortcut">ALT + Z</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                8. Ubah Huruf Kecil, Besar dan Proper (Besar Tiap Huruf Kata
+                Depan)
+              </div>
+              <div class="feature-shortcut">ALT + U</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <!-- Semua fitur tetap ditampilkan seperti sebelumnya -->
+        <div class="format-section" data-category="cover">
+          <div class="section-title">TABEL</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Memunculkan tabel</div>
+              <div class="feature-shortcut">CTRL + T</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Tambahkan Tabel Kolom Atas,Bawah, Kiri,Kanan
+              </div>
+              <div class="feature-shortcut">
+                ALT + (↑) ARAH ATAS / ALT + (↓) ARAH BAWAH / ALT + (←) ARAH KIRI
+                / ALT + (→) ARAH KANAN
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Hilangkan dan Tambahkan Border Tabel
+              </div>
+              <div class="feature-shortcut">ALT + B / ALT + SHIFT + B</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Merger dan Split Cell Tabel</div>
+              <div class="feature-shortcut">
+                ALT + SHIFT + M / ALT + CTRL + M
+              </div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Convert Text ke Tabel</div>
+              <div class="feature-shortcut">ALT + V</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Atur Ketebalan Border</div>
+              <div class="feature-shortcut">ALT + W</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="cover">
+          <div class="section-title">SECTION DAN PENOMORAN HALAMAN</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Bikin Section Next Page untuk Cover
+              </div>
+              <div class="feature-shortcut">ALT + N</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Section untuk Halaman Sebelum BAB 1
+              </div>
+              <div class="feature-shortcut">ALT + SHIFT + N</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Section untuk Halaman Sebelum BAB 2-5, Daftar Pustaka & Lampiran
+              </div>
+              <div class="feature-shortcut">ALT + CTRL + N</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">Angka Romawi Tengah Bawah</div>
+              <div class="feature-shortcut">ALT + R</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Angka Latin Tengah Bawah dan Kanan Atas
+              </div>
+              <div class="feature-shortcut">ALT + K</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Penomoran Semua Format Halaman Pertama atau Semua Halaman
+              </div>
+              <div class="feature-shortcut">CTRL + Q / ALT + Q</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="cover">
+          <div class="section-title">Cek Typo</div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Cek Typo dari Dialog atau Tanpa Dialog (IND)
+              </div>
+              <div class="feature-shortcut">ALT + E / ALT + SHIFT + E</div>
+            </div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+          </div>
+
+          <div class="feature-row">
+            <div>
+              <div class="feature-name">
+                Cek Typo dari Dialog / Tanpa Dialog (ENG)
+              </div>
+              <div class="feature-shortcut">ALT + E / ALT + SHIFT + E</div>
+            </div>
+            <div class="status no">NO</div>
+            <div class="status no">NO</div>
+            <div class="status yes">YES</div>
+            <div class="status yes">YES</div>
+          </div>
+        </div>
+
+        <div class="format-section" data-category="cover">
+          <div class="section-title">Dan Fitur Lainnya......</div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color yes"></div>
+          <span>Fitur Tersedia</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color no"></div>
+          <span>Fitur Tidak Tersedia</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Semua JS filter telah dihapus karena tombol format juga dihapus
+      function showFormat(category) {
+        // Update active tab
+        document.querySelectorAll(".format-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // Show/hide sections based on category
+        const sections = document.querySelectorAll(".format-section");
+
+        if (category === "all") {
+          sections.forEach((section) => {
+            section.style.display = "block";
+          });
+        } else if (category === "bahasa") {
+          sections.forEach((section) => {
+            const rows = section.querySelectorAll(".feature-row");
+            let hasIndonesianFeature = false;
+
+            rows.forEach((row) => {
+              const featureName = row
+                .querySelector(".feature-name")
+                .textContent.toLowerCase();
+              if (
+                featureName.includes("indonesia") ||
+                featureName.includes("bab") ||
+                featureName.includes("gambar") ||
+                featureName.includes("tabel") ||
+                featureName.includes("lampiran") ||
+                featureName.includes("daftar isi")
+              ) {
+                hasIndonesianFeature = true;
+              }
+            });
+
+            section.style.display = hasIndonesianFeature ? "block" : "none";
+          });
+        } else if (category === "english") {
+          sections.forEach((section) => {
+            const rows = section.querySelectorAll(".feature-row");
+            let hasEnglishFeature = false;
+
+            rows.forEach((row) => {
+              const featureName = row
+                .querySelector(".feature-name")
+                .textContent.toLowerCase();
+              if (
+                featureName.includes("english") ||
+                featureName.includes("chapter") ||
+                featureName.includes("figure") ||
+                featureName.includes("table") ||
+                featureName.includes("appendix") ||
+                featureName.includes("contents")
+              ) {
+                hasEnglishFeature = true;
+              }
+            });
+
+            section.style.display = hasEnglishFeature ? "block" : "none";
+          });
+        }
+      }
+
+      // Add hover animations
+      document.querySelectorAll(".feature-row").forEach((row) => {
+        row.addEventListener("mouseenter", function () {
+          this.style.transform = "translateX(8px)";
+          this.style.background = "rgba(255, 255, 255, 0.08)";
+        });
+
+        row.addEventListener("mouseleave", function () {
+          this.style.transform = "translateX(0)";
+          this.style.background = "rgba(255, 255, 255, 0.01)";
+        });
+      });
+
+      // Add click animation for status indicators
+      document.querySelectorAll(".status").forEach((status) => {
+        status.addEventListener("click", function () {
+          this.style.animation = "pulse 0.6s ease-in-out";
+          setTimeout(() => {
+            this.style.animation = "";
+          }, 600);
+        });
+      });
+
+      // Add CSS animation for pulse effect
+      const style = document.createElement("style");
+      style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>
